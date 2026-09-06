@@ -1,0 +1,40 @@
+services:
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: finance-postgres
+
+    environment:
+      POSTGRES_DB: personal_finance_db
+      POSTGRES_USER: finance_user
+      POSTGRES_PASSWORD: finance_password
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - finance_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance_user -d personal_finance_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: finance-pgadmin
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@finance.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+    ports:
+      - "5050:80"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  finance_postgres_data:
