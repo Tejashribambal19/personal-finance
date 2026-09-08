@@ -20,3 +20,4 @@ frontend/dist/
 
 # Backend
 backend/target/
+demo-data-backup.json
